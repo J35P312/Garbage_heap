@@ -11,6 +11,6 @@ for line in open(inputFile):
             VEP=line.split("CSQ=")[1];
         except:
             VEP=line.split("EFF=")[1];
-        if not "intergenic_variant" in VEP and not "intergenic_region" in VEP:
+        if "HIGH" in VEP or "MODERATE" in VEP:
             print(line.strip())
 
