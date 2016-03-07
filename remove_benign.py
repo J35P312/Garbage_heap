@@ -10,7 +10,10 @@ for line in open(inputFile):
         try:
             VEP=line.split("CSQ=")[1];
         except:
-            VEP=line.split("EFF=")[1];
+            try:
+                VEP=line.split("EFF=")[1];
+            except:
+                VEP=line.split("ANN=")[1];
         if "HIGH" in VEP or "MODERATE" in VEP:
             print(line.strip())
 
