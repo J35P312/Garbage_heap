@@ -27,7 +27,7 @@ FREQ_HEADER="##INFO=<ID=FRQ,Number=1,Type=Integer,Description=\"The frequency of
 
 
 for line in open(args.vcf):
-
+    content=line.split("\t")
     #print the header, then we are leaving the header, add CADD and FREQ tags to it
     if(line[0] == "#" and line[1] == "#"):
         print(line.strip())
@@ -44,4 +44,5 @@ for line in open(args.vcf):
         if args.freq:
             tag += ";FRQ="
             tag +=annotate_vcf(line,args.freq)
-        print(line.strip()+tag)
+        content[7]+=tag
+        print("\t".join(content))
