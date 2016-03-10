@@ -2,6 +2,7 @@ import sys
 import argparse
 import subprocess
 import os
+import fnmatch
 
 def main(vcf,humandb,output_folder):
     
@@ -41,6 +42,6 @@ elif args.folder:
             for filename in fnmatch.filter(filenames, '*.vcf'):
                 bam_file=os.path.join(root, filename)
                 args.vcf=bam_file
-                main(args,humandb,"")
+                main(args.vcf,humandb,"")
 else:
     print("|>L3453 5|>3(1/=Y --vcf || --folder")
