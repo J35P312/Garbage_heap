@@ -18,6 +18,8 @@ def annotate_vcf(variant,annovar_file):
                 if content[6] == variant_info[4]:
                     annotation=content[1]
                     break
+    if (annotation == ""):
+        annotation="0"
     return(annotation)
     
     
