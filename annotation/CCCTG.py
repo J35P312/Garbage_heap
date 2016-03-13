@@ -32,10 +32,12 @@ for line in open(args.vcf):
         cadd=""
         txt=content[7].split(";CADD=")
         if len(txt) == 2:
+            txt=txt[-1]
             cadd=txt.split(";")[0]
         popfreq=""
         txt=content[7].split(";FRQ=")
         if len(txt) == 2:
+            txt=txt[-1]
             popfreq=txt.split(";")[0]
         #have a look in the snpeff field
         try:
