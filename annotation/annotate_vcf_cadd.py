@@ -41,7 +41,7 @@ def main(args):
 parser = argparse.ArgumentParser("""this scripts annotates a SNP using CADD and popfreq, the popfreq and CADD file must be tabix indexed and tabbix must be installed""")
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
 parser.add_argument('--folder',type=str,help="used instead of vcf to annotate each vcf in a folder")
-parser.add_argument('-—cadd',type=str,help="The path to the CADD DB")
+parser.add_argument('--cadd',type=str,help="The path to the CADD DB")
 parser.add_argument('--popfreq',type=str,help="the path to the popfreq DB")
 args, unknown = parser.parse_known_args()
 
