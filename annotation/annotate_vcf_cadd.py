@@ -9,13 +9,13 @@ def main(args):
         	if line[0] == "#" and line[1] == "#":
         		print line.strip()
         	elif line[0] == "#":
-           		print "##INFO=<ID=CADD,Number=1,Type=Float,Description=\"The phredd CADD score of the variant\">"
-           		print "##INFO=<ID=FRQ,Number=1,Type=Float,Description=\"The frequency of the event in the database\">"
+           		print "##INFO=<ID=CADD,Number=1,Type=Integer,Description=\"The CADD relative score for this alternative.\">"
+           		print "##INFO=<ID=1000GAF,Number=A,Type=Float,Description=\"Estimated allele frequency in the range (0,1) in the 1000G database.\">"
            		print line.strip()
         	else:
            		CADD=100
            		FRQ=0
-           		annotation=";CADD={};FRQ={}"
+           		annotation=";CADD={};1000GAF={}"
            		content=line.split("\t")
 
            		chromosome=content[0]
