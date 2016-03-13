@@ -29,8 +29,8 @@ def main(args):
            		for entry in output:
                			db_content=entry.split("\t")
                			if len(db_content) > 3:
-               				if db_content[4] == alt and str(position) == db_content[1]:
-                  				CADD=db_content[6]
+               				if db_content[3] == alt and str(position) == db_content[1]:
+                  				CADD=db_content[5]
                   				break
                   	#popfreq annotation
            		command=["tabix {} {}:{}-{}".format(args.popfreq,chromosome,position,end)]
