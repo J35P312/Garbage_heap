@@ -13,7 +13,7 @@ def main(args):
            		print "##INFO=<ID=FRQ,Number=1,Type=Float,Description=\"The frequency of the event in the database\">"
            		print line.strip()
         	else:
-           		CADD=0
+           		CADD=100
            		FRQ=0
            		annotation=";CADD={};FRQ={}"
            		content=line.split("\t")
