@@ -6,7 +6,7 @@ parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf fil
 args, unknown = parser.parse_known_args()
 
 print("\"Chromosome\",\"Position\",\"ID\",\"Ref\",\"Alt\",\"feature\",\"effect\",\"Gene\",\"zygosity\",\"CADD\",\"popfreq\"")
-output="\"{chromosome}\",\"{pos}\",\"{id}\",\"{ref}\",\"{alt}\",\"{feature}\",\"{effect}\",\"{gene}\",\"{zygosity}\",\"{CADD}\",\"{popfreq}\""
+output="\"{chromosome}\",{pos},\"{id}\",\"{ref}\",\"{alt}\",\"{feature}\",\"{effect}\",\"{gene}\",\"{zygosity}\",{CADD},{popfreq}"
 for line in open(args.vcf):
     if not "#" == line[0]:
         content=line.strip().split("\t")
