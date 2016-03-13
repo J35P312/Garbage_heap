@@ -40,7 +40,7 @@ def main(args):
                			db_content=entry.split("\t")
                			if len(db_content) > 3:
                				if db_content[4] == alt and str(position) == db_content[1]:
-                  				FRQ=db_content[6]
+                  				FRQ=db_content[5]
                   				break
                   			
         		content[7] += annotation.format(CADD,FRQ)
