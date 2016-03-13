@@ -65,4 +65,4 @@ for line in open(args.vcf):
         for gene in snp_dictionary:
             for variant in snp_dictionary[gene]:
                 feature=snp_dictionary[gene][variant]
-                print(output.format(chromosome=chrom, pos=pos, id=id_, ref=ref, alt=alt,feature = feature ,effect=variant,gene=gene,zygosity=zygosity,CADD="", popfreq=""))
+                print(output.format(chromosome=chrom, pos=pos, id=id_, ref=ref, alt=alt,feature = feature ,effect=variant,gene=gene,zygosity=zygosity,CADD=cadd, popfreq=popfreq))
