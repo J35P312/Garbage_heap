@@ -32,7 +32,7 @@ def main(args):
                				if db_content[4] == alt and str(position) == db_content[1]:
                   				CADD=db_content[6]
                   				break
-                  	#cadd annotation
+                  	#popfreq annotation
            		command=["tabix {} {}:{}-{}".format(args.popfreq,chromosome,position,end)]
            		tmp=subprocess.check_output(command, shell = True);
            		output=tmp.split("\n")
@@ -44,7 +44,7 @@ def main(args):
                   				break
                   			
         		content[7] += annotation.format(CADD,FRQ)
-           		print("\t".join(content))
+           		print("\t".join(content).strip())
 	   		#popfreq
         
 
