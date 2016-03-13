@@ -5,37 +5,47 @@ import os
 import fnmatch
 
 def main(args):
+	for line in open(args.vcf):
+        	if line[0] == "#" and line[1] == "#":
+        		print line.strip()
+        	elif line[0] == "#":
+           		print "##INFO=<ID=CADD,Number=1,Type=Float,Description=\"The phredd CADD score of the variant\">"
+           		print "##INFO=<ID=FRQ,Number=1,Type=Float,Description=\"The frequency of the event in the database\">"
+           		print line.strip()
+        	else:
+           		CADD=0
+           		FRQ=0
+           		annotation=";CADD={};FRQ={}"
+           		content=line.split("\t")
 
-    for line in open(args.vcf):
-
-        if line[0] == "#" and line[1] == "#":
-           print line.strip()
-        elif line[0] == "#":
-           print "##INFO=<ID=CADD,Number=1,Type=Float,Description=\"The phredd CADD score of the variant\">"
-           print "##INFO=<ID=FRQ,Number=1,Type=Float,Description=\"The frequency of the event in the database\">"
-           print line.strip()
-        else:
-           CADD=0
-           FRQ=0
-           annotation=";CADD={};FRQ={}"
-           content=line.split("\t")
-
-           chromosome=content[0]
-           position=int(content[1])
-           end=position+1
-           alt=content[4]
-    	   #cadd annotation
-           command=["tabix {} {}:{}-{}".format(args.cadd,chromosome,position,end)]
-           tmp=subprocess.check_output(command, shell = True);
-           output=tmp.split("\n")
-           for entry in output:
-               db_content=entry.split("\t")
-               if db_content[4] == alt:
-                  CADD=db_content[6]
-                  break
-           content[7] += annotation.format(CADD,FRQ)
-           print("\t".join(content))
-	   #popfreq
+           		chromosome=content[0]
+           		position=int(content[1])
+           		end=position+1
+           		alt=content[4]
+    	   		#cadd annotation
+           		command=["tabix {} {}:{}-{}".format(args.cadd,chromosome,position,end)]
+           		tmp=subprocess.check_output(command, shell = True);
+           		output=tmp.split("\n")
+           		for entry in output:
+               			db_content=entry.split("\t")
+               			if len(db_content) > 3:
+               				if db_content[4] == alt and str(position) == db_content[1]:
+                  				CADD=db_content[6]
+                  				break
+                  	#cadd annotation
+           		command=["tabix {} {}:{}-{}".format(args.popfreq,chromosome,position,end)]
+           		tmp=subprocess.check_output(command, shell = True);
+           		output=tmp.split("\n")
+           		for entry in output:
+               			db_content=entry.split("\t")
+               			if len(db_content) > 3:
+               				if db_content[4] == alt and str(position) == db_content[1]:
+                  				FRQ=db_content[6]
+                  				break
+                  			
+        		content[7] += annotation.format(CADD,FRQ)
+           		print("\t".join(content))
+	   		#popfreq
         
 
 parser = argparse.ArgumentParser("""this scripts annotates a SNP using CADD and popfreq, the popfreq and CADD file must be tabix indexed and tabbix must be installed""")
