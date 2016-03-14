@@ -30,9 +30,9 @@ def annotate_vcf(variant,annovar_file):
     variant_info=variant.split("\t");
     if variant_info[0] in annovar_file:
         if variant_info[4] in annovar_file[variant_info[0]]:
-            for line in annovar_file[variant_info[0]][variant_info[4]]:
-                if content[0] == variant_info[1]:
-                    return(content[1])
+            for entry in annovar_file[variant_info[0]][variant_info[4]]:
+                if entry[0] == variant_info[1]:
+                    return(entry[1])
     return("0")
     
     
@@ -47,7 +47,6 @@ if args.freq:
 
 
 for line in open(args.vcf):
-    content=line.split("\t")
     #print the header, then we are leaving the header, add CADD and FREQ tags to it
     if(line[0] == "#" and line[1] == "#"):
         print(line.strip())
