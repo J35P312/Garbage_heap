@@ -33,7 +33,7 @@ def annotate_vcf(variant,annovar_file):
             for line in annovar_file[variant_info[0]][variant_info[4]]:
                 if content[0] == variant_info[1]:
                     return(content[1])
-    return(0)
+    return("0")
     
     
     
