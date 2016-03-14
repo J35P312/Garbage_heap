@@ -17,9 +17,11 @@ def read_annovar_file(annovar_file):
             if content[6] in annovar_file[content[2]]:
                 annovar_annotation[content[2]][content[6]].append( [ content[3],content[1] ] )
             else:
-                annovar_annotation[content[2]][content[6]]=[[ content[3],content[1] ]]
+                annovar_annotation[content[2]][content[6]]=[ [ content[3],content[1] ] ]
         else:
-            annovar_annotation[content[2]] = { content[6]:[ [ content[3],content[1] ] ]}
+            annovar_annotation[content[2]] ={}
+            
+            annovar_annotation[content[2]][content[6]] = [ [ content[3],content[1] ] ]
     return(annovar_annotation)
 
 def annotate_vcf(variant,annovar_file):
