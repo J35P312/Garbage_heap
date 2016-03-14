@@ -55,6 +55,7 @@ for line in open(args.vcf):
         print(FREQ_HEADER)
         print(line.strip())
     else:
+        content=line.split("\t")
         tag="";
         
         if args.cadd:
