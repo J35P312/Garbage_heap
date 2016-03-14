@@ -64,4 +64,4 @@ for line in open(args.vcf):
             tag += ";1000GAF="
             tag +=annotate_vcf(line,FRQ)
         content[7]+=tag
-        print("\t".join(content))
+        print("\t".join(content).strip())
