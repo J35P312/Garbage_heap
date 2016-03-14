@@ -14,7 +14,7 @@ def read_annovar_file(annovar_file):
     for line in open(annovar_file):
         content=line.split("\t")
         if content[2] in annovar_file:
-            if content[6] in annovar_file[content[2]]:
+            if content[6] in annovar_annotation[content[2]]:
                 annovar_annotation[content[2]][content[6]].append( [ content[3],content[1] ] )
             else:
                 annovar_annotation[content[2]][content[6]]=[ [ content[3],content[1] ] ]
