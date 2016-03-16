@@ -8,8 +8,8 @@ for line in open(inputFile):
         print(line.strip())
     else:
         content=line.split("\t")
-        frq=content[7].split(";1000GAF=")
-        frq=frq.split(";")[-1]
+        frq=content[7].split(";1000GAF=")[-1]
+        frq=frq.split(";")[0]
         if float(frq) <= 0.01:
             print(line.strip())
 
