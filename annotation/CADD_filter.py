@@ -10,6 +10,6 @@ for line in open(inputFile):
         content=line.split("\t")
         frq=content[7].split(";CADD=")[-1]
         frq=frq.split(";")[0]
-        if float(frq) <= 10:
+        if float(frq) >= 10:
             print(line.strip())
 
