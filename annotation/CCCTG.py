@@ -1,10 +1,45 @@
 import sys
 import argparse
+from operator import itemgetter, attrgetter
 
+def EFF(effects):
+    snp_dictionary={}
+    for effect in effects:
+        if "HIGH" in effect or "MODERATE" in effect:
+            variant=effect.split("(")[0]
+            if "[" in variant:
+                variant=variant.split("[")[0]
+            gene=effect.split("|")[5]
+            feature=effect.split("|")[6]
+            #for each snp, each unique effect of each gene shoudl only be reported once, ie not multiple intron variant GENEX for snp z
+            if not gene in snp_dictionary:
+                snp_dictionary[gene]={variant:feature}
+            else:
+                snp_dictionary[gene].update({variant:feature})
+        #if sequence_feature is not the only entry of a gene, 
+    return(snp_dictionary)
+    
+def ANN(effects):
+    snp_dictionary={}
+    for effect in effects:
+        if "HIGH" in effect or "MODERATE" in effect:
+            variant=effect.split("|")[1]
+            if "[" in variant:
+                variant=variant.split("[")[0]
+            gene=effect.split("|")[3]
+            feature=effect.split("|")[5]
+            #for each snp, each unique effect of each gene shoudl only be reported once, ie not multiple intron variant GENEX for snp z
+            if not gene in snp_dictionary:
+                snp_dictionary[gene]={variant:feature}
+            else:
+                snp_dictionary[gene].update({variant:feature})
+            #if sequence_feature is not the only entry of a gene, 
+    return(snp_dictionary)
+    
 parser = argparse.ArgumentParser("""turns a snpeff vcf into a csv file, output is printed to the stdout""")
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
 args, unknown = parser.parse_known_args()
-
+variant_list=[]
 print("\"Chromosome\",\"Position\",\"ID\",\"Ref\",\"Alt\",\"feature\",\"effect\",\"Gene\",\"zygosity\",\"CADD\",\"popfreq\"")
 output="\"{chromosome}\",{pos},\"{id}\",\"{ref}\",\"{alt}\",\"{feature}\",\"{effect}\",\"{gene}\",\"{zygosity}\",{CADD},{popfreq}"
 for line in open(args.vcf):
@@ -40,29 +75,25 @@ for line in open(args.vcf):
             txt=txt[-1]
             popfreq=txt.split(";")[0]
         #have a look in the snpeff field
+        eff=True
         try:
             SNPEFF=content[7].split("EFF=")[1];
         except:
                 SNPEFF=content[7].split("ANN=")[1];
+                eff=False
         effects=SNPEFF.split(",")
         #generate one netry per gene
-        snp_dictionary={}
-        for effect in effects:
-            variant=effect.split("(")[0]
-            if "[" in variant:
-                variant=variant.split("[")[0]
-            gene=effect.split("|")[5]
-            feature=effect.split("|")[6]
-            #for each snp, each unique effect of each gene shoudl only be reported once, ie not multiple intron variant GENEX for snp z
-            if not gene in snp_dictionary:
-                snp_dictionary[gene]={variant:feature}
-            else:
-                snp_dictionary[gene].update({variant:feature})
-        #if sequence_feature is not the only entry of a gene, then remove it
+        if eff:
+            snp_dictionary=EFF(effects)
+        else:
+            snp_dictionary=ANN(effects)
+            
         for gene in snp_dictionary:
             if len(snp_dictionary[gene]) > 1 and "sequence_feature" in snp_dictionary[gene]:
                 del snp_dictionary[gene]["sequence_feature"]
         for gene in snp_dictionary:
             for variant in snp_dictionary[gene]:
                 feature=snp_dictionary[gene][variant]
-                print(output.format(chromosome=chrom, pos=pos, id=id_, ref=ref, alt=alt,feature = feature ,effect=variant,gene=gene,zygosity=zygosity,CADD=cadd, popfreq=popfreq))
+                variant_list.append([chrom,pos,id_,ref, alt,feature ,variant,gene,zygosity,cadd,popfreq])
+for entry in sorted(variant_list, key=itemgetter(9), reverse = True): 
+    print(output.format(chromosome=entry[0], pos=entry[1], id=entry[2], ref=entry[3], alt=entry[4],feature = entry[5] ,effect= entry[6],gene=entry[7],zygosity=entry[8],CADD=entry[9], popfreq=entry[10]))
