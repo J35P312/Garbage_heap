@@ -35,7 +35,7 @@ for line in open(args.vcf):
             txt=txt[-1]
             cadd=txt.split(";")[0]
         popfreq=""
-        txt=content[7].split(";FRQ=")
+        txt=content[7].split(";1000GAF=")
         if len(txt) == 2:
             txt=txt[-1]
             popfreq=txt.split(";")[0]
