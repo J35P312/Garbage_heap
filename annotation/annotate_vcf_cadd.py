@@ -23,25 +23,27 @@ def main(args):
            		end=position+1
            		alt=content[4]
     	   		#cadd annotation
-           		command=["tabix {} {}:{}-{}".format(args.cadd,chromosome,position,end)]
-           		tmp=subprocess.check_output(command, shell = True);
-           		output=tmp.split("\n")
-           		for entry in output:
-               			db_content=entry.split("\t")
-               			if len(db_content) > 3:
-               				if db_content[3] == alt and str(position) == db_content[1]:
-                  				CADD=db_content[5]
-                  				break
+    	   		if args.cadd:
+           			command=["tabix {} {}:{}-{}".format(args.cadd,chromosome,position,end)]
+           			tmp=subprocess.check_output(command, shell = True);
+           			output=tmp.split("\n")
+           			for entry in output:
+               				db_content=entry.split("\t")
+               				if len(db_content) > 3:
+               					if db_content[3] == alt and str(position) == db_content[1]:
+                  					CADD=db_content[5]
+                  					break
                   	#popfreq annotation
-           		command=["tabix {} {}:{}-{}".format(args.popfreq,chromosome,position,end)]
-           		tmp=subprocess.check_output(command, shell = True);
-           		output=tmp.split("\n")
-           		for entry in output:
-               			db_content=entry.split("\t")
-               			if len(db_content) > 3:
-               				if db_content[4] == alt and str(position) == db_content[1]:
-                  				FRQ=db_content[5]
-                  				break
+                  	if args.popfreq:
+           			command=["tabix {} {}:{}-{}".format(args.popfreq,chromosome,position,end)]
+           			tmp=subprocess.check_output(command, shell = True);
+           			output=tmp.split("\n")
+           			for entry in output:
+               				db_content=entry.split("\t")
+               				if len(db_content) > 3:
+               					if db_content[4] == alt and str(position) == db_content[1]:
+                  					FRQ=db_content[5]
+                  					break
                   			
         		content[7] += annotation.format(CADD,FRQ)
            		print("\t".join(content).strip())
