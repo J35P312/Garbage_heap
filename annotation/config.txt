@@ -1,0 +1,2 @@
+FindSV:
+  general: {TMPDIR: '', UPPMAX: '', account: '', output: '', tracking: enabled,CADD: 'CADDDB',POP: frequencyDB}
