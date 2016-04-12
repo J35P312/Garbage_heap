@@ -1,0 +1,26 @@
+import sys
+import argparse
+import subprocess
+import os
+import fnmatch
+
+def main(args):
+	for line in open(args.vcf):
+        	if line[0] == "#":
+        		print line.strip()
+            elif(";natorP1=" in line):
+                pval=line.split(";natorP1=")[-1]
+                pval=val.split(";")[0]
+                if float(pval) <= args.pval:
+                    print line.strip()
+
+
+parser = argparse.ArgumentParser("""this scripts removes low quality cnvnator calls based on the natorP1 tag""")
+parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
+parser.add_argument('--pval',type=str,help="threshold P value")
+args, unknown = parser.parse_known_args()
+
+if args.vcf:
+    main(args)
+else:
+    print("|>L3453 5|>3(1/=Y --vcf")
