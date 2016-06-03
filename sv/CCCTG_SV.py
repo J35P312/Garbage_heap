@@ -46,7 +46,7 @@ variant_list=[]
 output="\"{chrA}\",{chrB},\"{posA}\",\"{posB}\",\"{len}\",\"{var}\",\"{frequency}\",\"{genes}"
 for line in open(args.vcf):
     if not "#" == line[0]:
-		chrA, posA, chrB, posB,event_type,INFO,format = readVCF.readVCFLine(line)
+        chrA, posA, chrB, posB,event_type,INFO,format = readVCF.readVCFLine(line)
         content=line.strip().split("\t")
 
         #have a look in the snpeff field
@@ -54,8 +54,11 @@ for line in open(args.vcf):
         try:
             SNPEFF=content[7].split("EFF=")[1];
         except:
-                SNPEFF=content[7].split("ANN=")[1];
-                eff=False
+                if ";ANN=" in content[7]:
+                    SNPEFF=content[7].split("ANN=")[1];
+                elif ";CSQ=" in content[7]:
+                    eff=False
+                    SNPEFF=content[7].split("CSQ=")[1];
         effects=SNPEFF.split(",")
         #generate one netry per gene
         if eff:
@@ -63,18 +66,19 @@ for line in open(args.vcf):
         else:
             snp_dictionary=ANN(effects)
             
-		genes=[]
+        genes=[]
         for gene in snp_dictionary:
-			genes.append(gene)
-		length="infinite"
-		if chrA == chrB:
-			length= str(int(posB)-int(posA))
+            genes.append(gene)
+		
+        length="infinite"
+        if chrA == chrB:
+            length= str(int(posB)-int(posA))
         variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
 
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
-ws0 = wb.add_sheet(filename.split("/")[-1],cell_overwrite_ok=True)
+ws0 = wb.add_sheet("sample",cell_overwrite_ok=True)
 i=0;
 header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","Genes"]
 j=0
@@ -82,7 +86,7 @@ for item in header:
     ws0.write(i, j, item)
     j+=1
 i=1
-for entry in sorted(variant_list): 
+for entry in variant_list: 
     j=0;
     for item in entry:
         ws0.write(i, j, item)
