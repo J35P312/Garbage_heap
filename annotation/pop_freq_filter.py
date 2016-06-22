@@ -10,6 +10,6 @@ for line in open(inputFile):
         content=line.split("\t")
         frq=content[7].split(";1000GAF=")[-1]
         frq=frq.split(";")[0]
-        if float(frq) <= 0.01:
+        if float(frq) <= 0.05:
             print(line.strip())
 
