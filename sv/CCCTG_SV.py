@@ -69,11 +69,12 @@ for line in open(args.vcf):
         genes=[]
         for gene in snp_dictionary:
             genes.append(gene)
-		
-        length="infinite"
+        length=float("inf")
         if chrA == chrB:
-            length= str(int(posB)-int(posA))
-        variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
+            length= int(posB)-int(posA)
+
+        if len(genes) > 0 or length > 10000:
+            variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
 
 filename=args.vcf.replace(".vcf",".xls")
 
