@@ -100,7 +100,7 @@ for line in open(args.vcf):
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
-ws0 = wb.add_sheet(filename.split("/")[-1],cell_overwrite_ok=True)
+ws0 = wb.add_sheet("variants",cell_overwrite_ok=True)
 i=0;
 header=["Chromosome","Position","ID","Ref","Alt","amino-acid","effect","Gene","zygosity","CADD","popfreq"]
 j=0
