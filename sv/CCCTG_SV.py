@@ -74,7 +74,7 @@ for line in open(args.vcf):
             length= int(posB)-int(posA)
 
         if len(genes) > 0 or length > 10000:
-            variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
+            variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"too many genes to be printed!"])
 
 filename=args.vcf.replace(".vcf",".xls")
 
