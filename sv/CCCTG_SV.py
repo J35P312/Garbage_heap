@@ -24,7 +24,7 @@ def EFF(effects):
 def ANN(effects):
     snp_dictionary={}
     for effect in effects:
-        if "HIGH" in effect or "MODERATE" in effect:
+        if "HIGH" in effect or "MODERATE" in effect or "MODIFIER":
             variant=effect.split("|")[1]
             if "[" in variant:
                 variant=variant.split("[")[0]
@@ -32,14 +32,14 @@ def ANN(effects):
             feature=effect.split("|")[10]
             #for each snp, each unique effect of each gene shoudl only be reported once, ie not multiple intron variant GENEX for snp z
             if not gene in snp_dictionary:
-                snp_dictionary[gene]={variant:feature}
-            else:
-                snp_dictionary[gene].update({variant:feature})
+                snp_dictionary[gene]={}
+            snp_dictionary[gene][variant]=feature
             #if sequence_feature is not the only entry of a gene, 
     return(snp_dictionary)
     
 parser = argparse.ArgumentParser("""turns a snpeff vcf into a csv file, output is printed to the stdout""")
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
+parser.add_argument('--frequency',type=float,default = 0.1,help="frequency threshold, more common variants are not printed")
 args, unknown = parser.parse_known_args()
 variant_list=[]
 
@@ -74,8 +74,11 @@ for line in open(args.vcf):
             length= int(posB)-int(posA)
 
         if len(genes) > 0 or length > 10000:
-            variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"too many genes to be printed!"])
-
+            if float(INFO["FRQ"]) < args.frequency: 
+                if len(genes) < 200:
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
+                else:
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"More than 200 genes!"])
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
