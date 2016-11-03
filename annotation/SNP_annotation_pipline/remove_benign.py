@@ -14,6 +14,6 @@ for line in open(inputFile):
                 VEP=line.split("EFF=")[1];
             except:
                 VEP=line.split("ANN=")[1];
-        if "HIGH" in VEP or "MODERATE" in VEP:
+        if "HIGH" in VEP or "MODERATE" in VEP or "splice" in VEP:
             print(line.strip())
 
