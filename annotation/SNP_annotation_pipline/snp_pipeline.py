@@ -36,7 +36,7 @@ for line in open(args.prefix+"_concat.vcf"):
                 f.write( line.strip() + "\n" )
             
 f.close()
-os.system("python exac_annotation --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
+os.system("python exac_annotation.py --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
 
 
 f= open(args.prefix+".exac.filtered.vcf","w")
