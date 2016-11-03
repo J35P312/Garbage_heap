@@ -7,7 +7,7 @@ import fnmatch
 parser = argparse.ArgumentParser("""takes an indel vcf and a snp vcf as input, these files are merged and filtered using exac frequencies and cadd""")
 parser.add_argument('--indels',type=str,required=True,help="the indel vcf")
 parser.add_argument('--snps',type=str,required=True,help="The snp vcf")
-parser.add_argument('--prefix',type=str,",help="output prefix")
+parser.add_argument('--prefix',type=str,"output",help="output prefix")
 parser.add_argument('--cadd',type=str,default=3000,help="path to cadd db")
 parser.add_argument('--exac',type=str,default=3000,help="path to exac db")
 args, unknown = parser.parse_known_args()
