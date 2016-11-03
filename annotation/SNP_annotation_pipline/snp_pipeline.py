@@ -7,9 +7,10 @@ import fnmatch
 parser = argparse.ArgumentParser("""takes an indel vcf and a snp vcf as input, these files are merged and filtered using exac frequencies and cadd""")
 parser.add_argument('--indels',type=str,required=True,help="the indel vcf")
 parser.add_argument('--snps',type=str,required=True,help="The snp vcf")
-parser.add_argument('--prefix',type=str,default="output",help="output prefix")
+parser.add_argument('--prefix',type=str,help="output prefix")
 parser.add_argument('--cadd',type=str,default=3000,help="path to cadd db")
 parser.add_argument('--exac',type=str,default=3000,help="path to exac db")
+parser.add_argument('--1kg',type=str,default=3000,help="path to thousand genome db")
 args, unknown = parser.parse_known_args()
 
 if not args.prefix:
@@ -37,9 +38,10 @@ for line in open(args.prefix+"_concat.vcf"):
             
 f.close()
 os.system("python exac_annotation.py --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
+os.system("python exac_annotation.py --vcf {} --tag 1000GAF --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.1kg, args.prefix+".exac.vcf"))
 
 
-f= open(args.prefix+".exac.filtered.vcf","w")
+f= open(args.prefix+".filtered.vcf","w")
 for line in open(args.prefix+".exac.vcf"):
     
     if(line[0] == "#"):

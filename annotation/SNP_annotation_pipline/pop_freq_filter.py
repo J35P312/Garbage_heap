@@ -19,6 +19,6 @@ for line in open(inputFile):
             frq=content[7].split(";AF=")[-1]
             exac_frq=frq.split(";")[0]
         
-        if float(exac_frq) <= 0.02 and float(kg_frq) <= 0.02:
+        if float(exac_frq) <= 0.01 and float(kg_frq) <= 0.01:
             print(line.strip())
 

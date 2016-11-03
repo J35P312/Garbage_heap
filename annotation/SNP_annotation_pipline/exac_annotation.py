@@ -15,15 +15,16 @@ def main(args):
         if not content[1] in exac_db[content[0]]:
             exac_db[content[0]][content[1]] = {}  
         exac_db[content[0]][content[1]][content[3]] = content[4]
+        
     for line in open(args.vcf):
         if line[0] == "#" and line[1] == "#":
             print line.strip()
         elif line[0] == "#":
-            print "##INFO=<ID=AF,Number=A,Type=Float,Description=\"Estimated allele frequency in the range (0,1) in the 1000G database.\">"
+            print "##INFO=<ID={},Number=1,Type=Float,Description=\"Estimated allele frequency in the range (0,1).\">".format(args.tag)
             print line.strip()
         else:
             FRQ=0
-            annotation=";AF={}"
+            annotation=";{}={}"
             content=line.split("\t")
 
             chromosome=content[0]
@@ -37,7 +38,7 @@ def main(args):
                   	    if alt in exac_db[chromosome][position]:
                   	        FRQ=exac_db[chromosome][position][alt]
 
-            content[7] += annotation.format(FRQ)
+            content[7] += annotation.format(args.tag,FRQ)
             print("\t".join(content).strip())
 	   		#popfreq
         
@@ -46,6 +47,7 @@ parser = argparse.ArgumentParser("""this scripts annotates a SNP using CADD and 
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
 parser.add_argument('--folder',type=str,help="used instead of vcf to annotate each vcf in a folder")
 parser.add_argument('--exac',type=str,help="the path to the exac DB")
+parser.add_argument('--tag',type=str,default="AF",help="the vcf frequency tag(default = AF"")
 args, unknown = parser.parse_known_args()
 
 if args.vcf:
