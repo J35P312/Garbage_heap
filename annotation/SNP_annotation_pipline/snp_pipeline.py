@@ -17,7 +17,7 @@ if not args.prefix:
 
 os.system("vcf-concat {} {} > {}".format(args.snps,args.indels,args.prefix+"_concat.vcf"))
 
-f= open(args.prefix+"_no_benign.vcf")
+f= open(args.prefix+"_no_benign.vcf","w")
 for line in open(args.prefix+"_concat.vcf"):
     
     if(line[0] == "#"):
@@ -39,7 +39,7 @@ f.close()
 os.system("python exac_annotation --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
 
 
-f= open(args.prefix+".exac.filtered.vcf")
+f= open(args.prefix+".exac.filtered.vcf","w")
 for line in open(args.prefix+".exac.vcf"):
     
     if(line[0] == "#"):
