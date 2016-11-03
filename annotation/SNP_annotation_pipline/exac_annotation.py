@@ -35,8 +35,8 @@ def main(args):
             if args.exac:
                 if chromosome in exac_db:
                     if position in exac_db[chromosome]:
-                  	    if alt in exac_db[chromosome][position]:
-                  	        FRQ=exac_db[chromosome][position][alt]
+                       if alt in exac_db[chromosome][position]:
+                          FRQ=exac_db[chromosome][position][alt]
 
             content[7] += annotation.format(args.tag,FRQ)
             print("\t".join(content).strip())
@@ -47,7 +47,7 @@ parser = argparse.ArgumentParser("""this scripts annotates a SNP using CADD and 
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
 parser.add_argument('--folder',type=str,help="used instead of vcf to annotate each vcf in a folder")
 parser.add_argument('--exac',type=str,help="the path to the exac DB")
-parser.add_argument('--tag',type=str,default="AF",help="the vcf frequency tag(default = AF"")
+parser.add_argument('--tag',type=str,default="AF",help="the vcf frequency tag(default = AF)")
 args, unknown = parser.parse_known_args()
 
 if args.vcf:
