@@ -39,7 +39,7 @@ f.close()
 os.system("python exac_annotation --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
 
 
-f= open(args.prefix+".exac.filtered.vcf"))
+f= open(args.prefix+".exac.filtered.vcf")
 for line in open(args.prefix+".exac.vcf"):
     
     if(line[0] == "#"):
