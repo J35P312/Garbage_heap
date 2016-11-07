@@ -8,9 +8,9 @@ parser = argparse.ArgumentParser("""takes an indel vcf and a snp vcf as input, t
 parser.add_argument('--indels',type=str,required=True,help="the indel vcf")
 parser.add_argument('--snps',type=str,required=True,help="The snp vcf")
 parser.add_argument('--prefix',type=str,help="output prefix")
-parser.add_argument('--cadd',type=str,default=3000,help="path to cadd db")
-parser.add_argument('--exac',type=str,default=3000,help="path to exac db")
-parser.add_argument('--1kg',type=str,default=3000,help="path to thousand genome db")
+parser.add_argument('--cadd',type=str,required=True,help="path to cadd db")
+parser.add_argument('--exac',type=str,required=True,help="path to exac db")
+parser.add_argument('--kg',type=str,required=True,help="path to thousand genome db")
 args, unknown = parser.parse_known_args()
 
 if not args.prefix:
@@ -37,12 +37,12 @@ for line in open(args.prefix+"_concat.vcf"):
                 f.write( line.strip() + "\n" )
             
 f.close()
-os.system("python exac_annotation.py --vcf {} --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
-os.system("python exac_annotation.py --vcf {} --tag 1000GAF --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.1kg, args.prefix+".exac.vcf"))
+os.system("python exac_annotation_sqlite.py --vcf {} --tag EXACAF --exac {} > {}".format(args.prefix+"_no_benign.vcf", args.exac, args.prefix+".exac.vcf"))
+os.system("python exac_annotation_sqlite.py --vcf {} --tag 1000GAF --exac {} > {}".format(args.prefix+".exac.vcf", args.kg, args.prefix+".exac.kg.vcf"))
 
 
 f= open(args.prefix+".filtered.vcf","w")
-for line in open(args.prefix+".exac.vcf"):
+for line in open(args.prefix+".exac.kg.vcf"):
     
     if(line[0] == "#"):
         f.write( line.strip() + "\n" )
@@ -54,9 +54,9 @@ for line in open(args.prefix+".exac.vcf"):
             frq=content[7].split(";1000GAF=")[-1]
             kg_frq=frq.split(";")[0]
             
-        if ";AF=" in line:
+        if ";EXACAF=" in line:
             content=line.split("\t")
-            frq=content[7].split(";AF=")[-1]
+            frq=content[7].split(";EXACAF=")[-1]
             exac_frq=frq.split(";")[0]
         
         if float(exac_frq) <= 0.02 and float(kg_frq) <= 0.02:
