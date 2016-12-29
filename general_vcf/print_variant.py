@@ -21,15 +21,7 @@ first =1
 variants=sys.argv[2:]
 genes=[]
 for line in open(sys.argv[2]):
-    genes.append(line.strip());
+    genes.append("\|"+line.strip() + "\|" );
 
-for line in open(inputFile):
-    if line[0] == "#":
-        print(line.strip())
-    else:
-        printed=False;
-        for gene in genes:
-            if not printed and "|"+gene + "|" in line.strip():
-                printed = True;
-                print(line.strip())
-
+gene_list="|".join(genes)
+os.system("grep -E \"#|{}\" {}".format(gene_list, inputFile))
