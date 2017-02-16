@@ -65,7 +65,15 @@ for line in open(args.vcf):
             snp_dictionary=EFF(effects)
         else:
             snp_dictionary=ANN(effects)
-            
+
+        signal=0
+        if "PE" in format:
+            signal += int(format["PE"][0])
+        if "SR" in format:
+            signal += int(format["SR"][0])      
+        if "natorRD" in INFO:
+            signal= INFO["natorRD"]
+        signal = str(signal)
         genes=[]
         for gene in snp_dictionary:
             genes.append(gene)
@@ -76,15 +84,15 @@ for line in open(args.vcf):
         if len(genes) > 0 or length > 10000:
             if float(INFO["FRQ"]) < args.frequency: 
                 if len(genes) < 200:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"|".join(genes)])
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],signal,"|".join(genes)])
                 else:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],"More than 200 genes!"])
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],signal,"More than 200 genes!"])
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
 ws0 = wb.add_sheet("sample",cell_overwrite_ok=True)
 i=0;
-header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","Genes"]
+header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","signal","Genes"]
 j=0
 for item in header:
     ws0.write(i, j, item)
