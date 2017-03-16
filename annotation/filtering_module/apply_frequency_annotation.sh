@@ -1,8 +1,8 @@
 #first argument - input directory
 #second argument - output directory
 
-exac_path=
-kg_path=
+exac_path=/proj/b2014152/private/exac/af_filter_data.tsv
+kg_path=/proj/b2014152/private/exac/1kg_filter.tab
 
 for file in $(ls $1)
 do

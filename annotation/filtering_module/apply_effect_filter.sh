@@ -3,5 +3,5 @@
 
 for file in $(ls $1)
 do
-    grep -E "HIGH|MODERATE" $file > $2/$file
+    grep -E "HIGH|MODERATE" $1/$file > $2/$file
 done
