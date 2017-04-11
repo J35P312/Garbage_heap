@@ -66,14 +66,25 @@ for line in open(args.vcf):
         else:
             snp_dictionary=ANN(effects)
 
-        signal=0
+        signalRD=""
+        signalSR=""
+        signalPE=""
+
+        orientationA=""
+        orientationB=""
         if "PE" in format:
-            signal += int(format["PE"][0])
+            signalPE =format["PE"][0]
+            
         if "SR" in format:
-            signal += int(format["SR"][0])      
+            signalSR =format["SR"][0]      
         if "natorRD" in INFO:
-            signal= INFO["natorRD"]
-        signal = str(signal)
+            signalRD = INFO["natorRD"]
+
+
+        if "PE" in format or "SR" in format:
+            orientationA=line.split(";OA=")[-1].split(";")[0]
+            orientationB=line.split(";OB=")[-1].split(";")[0]
+            
         genes=[]
         for gene in snp_dictionary:
             genes.append(gene)
@@ -84,15 +95,15 @@ for line in open(args.vcf):
         if len(genes) > 0 or length > 10000:
             if float(INFO["FRQ"]) < args.frequency: 
                 if len(genes) < 200:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],signal,"|".join(genes)])
+                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,INFO["FRQ"],signalPE,signalSR,signalRD,"|".join(genes)])
                 else:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,INFO["FRQ"],signal,"More than 200 genes!"])
+                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,INFO["FRQ"],signalPE,signalSR,signalRD,"More than 200 genes!"])
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
 ws0 = wb.add_sheet("sample",cell_overwrite_ok=True)
 i=0;
-header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","signal","Genes"]
+header=["ChromosomeA","chromosomeB","PosA","orientationA","PosB","orientationB","Length","variant","frequency","signalPE","signalSR","signalRD","Genes"]
 j=0
 for item in header:
     ws0.write(i, j, item)
