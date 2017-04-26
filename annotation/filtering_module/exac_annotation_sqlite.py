@@ -6,15 +6,14 @@ import fnmatch
 import sqlite3
 
 
-def main(args):
-
-    conn = sqlite3.connect(':memory:')
+def build_db(args):
+    conn = sqlite3.connect(args.prefix +".db")
     c = conn.cursor()
     A="CREATE TABLE SVDB (chr TEXT, pos INT,alt TEXT, frequency FLOAT)"
     c.execute(A)
 
     exac_db=[]
-    for line in open(args.exac):
+    for line in open(args.build):
         if line[0] == "#":
             continue
         content=line.strip().split()
@@ -37,7 +36,11 @@ def main(args):
     A="CREATE INDEX SNP ON SVDB (chr, pos, alt)"
     c.execute(A)
     conn.commit()
-    
+
+def main(args):
+    conn = sqlite3.connect(args.db)
+    c = conn.cursor()
+
     for line in open(args.vcf):
         if line[0] == "#" and line[1] == "#":
             print line.strip()
@@ -69,11 +72,13 @@ def main(args):
 	   		#popfreq
         
     conn.close()
-parser = argparse.ArgumentParser("""this scripts annotates a SNP using CADD and popfreq, the popfreq and CADD file must be tabix indexed and tabbix must be installed""")
-parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
+parser = argparse.ArgumentParser("""annotation script, creates sqlite databases of tab separated files and annotates vcf files""")
+parser.add_argument('--vcf',type=str,help="the path to the vcf file")
 parser.add_argument('--folder',type=str,help="used instead of vcf to annotate each vcf in a folder")
-parser.add_argument('--exac',type=str,help="the path to the exac DB")
+parser.add_argument('--db',type=str,help="the path to the db")
 parser.add_argument('--tag',type=str,default="AF",help="the vcf frequency tag(default = AF)")
+parser.add_argument('--build',type=str,help="build a db for frequency annotation")
+parser.add_argument('--prefix',type=str,default="Drop_table",help="used together with the build option, this will be the prefix of the output db")
 args, unknown = parser.parse_known_args()
 
 if args.vcf:
@@ -84,5 +89,7 @@ elif args.folder:
                 bam_file=os.path.join(root, filename)
                 args.vcf=bam_file
                 main(args)
+elif args.build:
+    build_db(args)
 else:
     print("|>L3453 5|>3(1/=Y --vcf || --folder")
