@@ -74,14 +74,18 @@ for line in open(args.vcf):
         orientationB=""
         if "PE" in format:
             signalPE =format["PE"][0]
+        elif  "DV" in format:
+            signalPE =format["DV"][0]
             
         if "SR" in format:
-            signalSR =format["SR"][0]      
+            signalSR =format["SR"][0]
+        elif "RV" in format:
+            signalSR =format["RV"][0]
         if "natorRD" in INFO:
             signalRD = INFO["natorRD"]
 
 
-        if "PE" in format or "SR" in format:
+        if "PE" in format or "SR" in format or "RV" in format or "DV" in format:
             orientationA=line.split(";OA=")[-1].split(";")[0]
             orientationB=line.split(";OB=")[-1].split(";")[0]
             
