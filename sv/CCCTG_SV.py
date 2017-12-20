@@ -51,6 +51,7 @@ for line in open(args.vcf):
 
         #have a look in the snpeff field
         eff=True
+        SNPEFF=""
         try:
             SNPEFF=content[7].split("EFF=")[1];
         except:
@@ -97,11 +98,15 @@ for line in open(args.vcf):
             length= int(posB)-int(posA)
 
         if len(genes) > 0 or length > 10000:
-            if float(INFO["FRQ"]) < args.frequency: 
+            frq=0
+            if "FRQ" in INFO:
+                frq=float(INFO["FRQ"])
+
+            if frq < args.frequency: 
                 if len(genes) < 200:
-                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,INFO["FRQ"],signalPE,signalSR,signalRD,"|".join(genes)])
+                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,frq,signalPE,signalSR,signalRD,"|".join(genes)])
                 else:
-                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,INFO["FRQ"],signalPE,signalSR,signalRD,"More than 200 genes!"])
+                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,frq,signalPE,signalSR,signalRD,"More than 200 genes!"])
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
