@@ -1,6 +1,9 @@
 # Garbage_heap
 A big pile of semi usable script
 
+# extractRegion
+
+A tool for extracting regions from bam files using bedpe files
 
 # sv
 
