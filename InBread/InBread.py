@@ -6,8 +6,6 @@ hom_patient=0
 sample_data={}
 first=True
 q_lim=60
-min_depth=20
-max_depth=40
 
 for sample in sys.argv:
     if first:
@@ -18,14 +16,9 @@ for sample in sys.argv:
     for line in open(sample):
         if line[0] == "#":
             continue
-        content=line.strip().split()
-        if content[6] <= q_lim:
-            continue
-        depth=int(line.split(";DP=")[-1].split(";")[0])
-
-        if depth < min_depth or depth > max_depth:
-            continue
-
+        #content=line.strip().split()
+        #if content[6] <= q_lim:
+        #    continue
         if "\t0/1:" in line:
              sample_data[sample.split("/")[-1].replace(".vcf","")]["het"]+=1
         elif "\t1/1:" in line:
