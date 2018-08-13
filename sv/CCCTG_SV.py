@@ -40,6 +40,8 @@ def ANN(effects):
 parser = argparse.ArgumentParser("""turns a snpeff vcf into a csv file, output is printed to the stdout""")
 parser.add_argument('--vcf',type=str,required=True,help="the path to the vcf file")
 parser.add_argument('--frequency',type=float,default = 0.1,help="frequency threshold, more common variants are not printed")
+parser.add_argument('--length',type=int,default = 10000,help="length threshold, smaller intergenic variants are not printed")
+
 args, unknown = parser.parse_known_args()
 variant_list=[]
 
@@ -74,9 +76,9 @@ for line in open(args.vcf):
         orientationA=""
         orientationB=""
         if "PE" in format:
-            signalPE =format["PE"][0]
+            signalPE =int(format["PE"][0])
         elif  "DV" in format:
-            signalPE =format["DV"][0]
+            signalPE = int(format["DV"][0])
             
         if "SR" in format:
             signalSR =format["SR"][0]
@@ -84,11 +86,6 @@ for line in open(args.vcf):
             signalSR =format["RV"][0]
         if "natorRD" in INFO:
             signalRD = INFO["natorRD"]
-
-
-        if "PE" in format or "SR" in format or "RV" in format or "DV" in format:
-            orientationA=line.split(";OA=")[-1].split(";")[0]
-            orientationB=line.split(";OB=")[-1].split(";")[0]
             
         genes=[]
         for gene in snp_dictionary:
@@ -97,22 +94,29 @@ for line in open(args.vcf):
         if chrA == chrB:
             length= int(posB)-int(posA)
 
-        if len(genes) > 0 or length > 10000:
+        zygosity=""
+        if "0/1" in content[-1]:
+                zygosity="Het"
+        elif "1/1" in content[-1]:
+                zygosity="Hom"
+
+        if ( len(genes) > 0 and not (len(genes) == 1 and genes[0] == "") ) or length > args.length:
             frq=0
             if "FRQ" in INFO:
                 frq=float(INFO["FRQ"])
 
             if frq < args.frequency: 
                 if len(genes) < 200:
-                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,frq,signalPE,signalSR,signalRD,"|".join(genes)])
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,frq,zygosity,signalPE,signalSR,signalRD,"|".join(genes)])
                 else:
-                    variant_list.append([chrA,chrB,posA,orientationA,posB,orientationB,length,event_type,frq,signalPE,signalSR,signalRD,"More than 200 genes!"])
+                    variant_list.append([chrA,chrB,posA,posB,length,event_type,frq,zygosity,signalPE,signalSR,signalRD,"More than 200 genes!"])
+
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
 ws0 = wb.add_sheet("sample",cell_overwrite_ok=True)
 i=0;
-header=["ChromosomeA","chromosomeB","PosA","orientationA","PosB","orientationB","Length","variant","frequency","signalPE","signalSR","signalRD","Genes"]
+header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","zygosity","signalPE","signalSR","signalRD","Genes"]
 j=0
 for item in header:
     ws0.write(i, j, item)
