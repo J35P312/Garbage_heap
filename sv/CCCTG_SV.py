@@ -46,9 +46,12 @@ args, unknown = parser.parse_known_args()
 variant_list=[]
 
 output="\"{chrA}\",{chrB},\"{posA}\",\"{posB}\",\"{len}\",\"{var}\",\"{frequency}\",\"{genes}"
+
+sample_ids = readVCF.get_sample_ids(args.vcf)
 for line in open(args.vcf):
     if not "#" == line[0]:
         chrA, posA, chrB, posB,event_type,INFO,format = readVCF.readVCFLine(line)
+#        print((chrA, posA, chrB, posB,event_type,INFO,format))
         content=line.strip().split("\t")
 
         #have a look in the snpeff field
@@ -76,14 +79,14 @@ for line in open(args.vcf):
         orientationA=""
         orientationB=""
         if "PE" in format:
-            signalPE =int(format["PE"][0])
+            signalPE = "|".join(format["PE"])
         elif  "DV" in format:
-            signalPE = int(format["DV"][0])
+            signalPE = "|".join(format["DV"])
             
         if "SR" in format:
-            signalSR =format["SR"][0]
+            signalSR = "|".join(format["SR"])
         elif "RV" in format:
-            signalSR =format["RV"][0]
+            signalSR = "|".join(format["RV"])
         if "natorRD" in INFO:
             signalRD = INFO["natorRD"]
             
@@ -104,19 +107,39 @@ for line in open(args.vcf):
             frq=0
             if "FRQ" in INFO:
                 frq=float(INFO["FRQ"])
-
-            if frq < args.frequency: 
-                if len(genes) < 200:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,frq,zygosity,signalPE,signalSR,signalRD,"|".join(genes)])
+            if frq >= args.frequency: 
+                continue
+            
+            variant_content = [chrA, chrB, posA, posB, length, event_type, frq]
+            for gt in format["GT"]:
+                if gt == "0/1":
+                    variant_content.append("Het")
+                elif gt == "1/1":
+                    variant_content.append("Hom")
+                # otherwise wild-type is assumed
                 else:
-                    variant_list.append([chrA,chrB,posA,posB,length,event_type,frq,zygosity,signalPE,signalSR,signalRD,"More than 200 genes!"])
+                    variant_content.append("WT")
+            variant_content.append(signalPE)
+            variant_content.append(signalSR)
+            variant_content.append(signalRD)
+            if len(genes) < 200:
+                variant_content.append("|".join(genes))
+            else:
+                variant_content.append("More than 200 genes!")
+            variant_list.append(variant_content)
 
 filename=args.vcf.replace(".vcf",".xls")
 
 wb =  xlwt.Workbook()
 ws0 = wb.add_sheet("sample",cell_overwrite_ok=True)
 i=0;
-header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency","zygosity","signalPE","signalSR","signalRD","Genes"]
+header=["ChromosomeA","chromosomeB","PosA","PosB","Length","variant","frequency"]
+for sample_id in sample_ids:
+    header.append(sample_id)
+header.append("signalPE")
+header.append("signalSR")
+header.append("signalRD")
+header.append("Genes")
 j=0
 for item in header:
     ws0.write(i, j, item)
