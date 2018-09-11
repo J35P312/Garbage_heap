@@ -1,5 +1,13 @@
 import sys,re
 
+def get_sample_ids(vcf_file):
+    for line in open(vcf_file):
+        if not line.startswith("#CHROM"):
+            continue
+        sample_ids = line.rstrip().split("\t")[9:]
+        break
+    return sample_ids
+
 def readVCFLine(line):
     if line[0] == "#":
         return(None)
@@ -80,7 +88,7 @@ def readVCFLine(line):
             if string.count(":"):
                 lst=string.split(":");
                 chrB=lst[0].replace("chr","").replace("Chr","").replace("CHR","")
-                posB=int(lst[1]);
+                posB=int(lst[len(lst)-1]);
                 if chrA > chrB:
                     chrT = chrA
                     chrA = chrB
