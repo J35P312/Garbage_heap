@@ -64,7 +64,7 @@ for line in open(args.vcf):
                     SNPEFF=content[7].split("ANN=")[1];
                 elif ";CSQ=" in content[7]:
                     eff=False
-                    SNPEFF=content[7].split("CSQ=")[1];
+                    SNPEFF=content[7].split("CSQ=")[1].split(";")[0];
         effects=SNPEFF.split(",")
         #generate one netry per gene
         if eff:
